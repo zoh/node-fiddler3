@@ -1,0 +1,17 @@
+{
+  "name": "node-fiddler3",
+  "version": "0.0.3",
+  "scripts": {
+    "start": "node ./server/server.js"
+  },
+  "bin": {
+    "fiddler": "./bin/cli.js"
+  },
+  "dependencies": {
+    "chokidar": "^1.6.1",
+    "colors": "^1.1.2",
+    "commander": "^2.9.0",
+    "http-proxy": "^1.16.2",
+    "winston": "^2.3.1"
+  }
+}
