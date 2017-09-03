@@ -1,13 +1,18 @@
 {
   "name": "node-fiddler3",
   "version": "0.0.3",
-  "git": "https://github.com/zoh/node-fiddler3",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zoh/node-fiddler3"
+  },
   "scripts": {
     "start": "node ./server/server.js"
   },
   "bin": {
     "fiddler": "./bin/cli.js"
   },
+  "description": "Proxy server with rules",
+  "author": "zoh <zoh@bk.ru>",
   "dependencies": {
     "chokidar": "^1.6.1",
     "colors": "^1.1.2",
@@ -16,5 +21,6 @@
     "js-yaml": "^3.9.1",
     "rimraf": "^2.6.1",
     "winston": "^2.3.1"
-  }
+  },
+  "license": "MIT"
 }

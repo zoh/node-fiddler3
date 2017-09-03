@@ -1,11 +1,7 @@
 import * as http from "http";
-import * as fs from 'fs';
-import request from "./proxy/request";
-import {Watcher} from "./watcher"
-import {logger} from '../logger'
-import {resolve} from "url";
-import {Config, isDebug, makeUrl} from "./config/config";
-import * as httpProxy from 'http-proxy'
+import {logger} from "../logger";
+import {Config, isDebug} from "./config/config";
+import * as httpProxy from "http-proxy";
 import {error} from "util";
 
 /*

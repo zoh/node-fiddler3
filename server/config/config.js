@@ -32,7 +32,7 @@ exports.makeConfig = function (filePath, cfgFile) {
         var pack = require('../../package.json');
         var data = yaml.safeDump(cfgFile);
         var res = "# version: " + pack.version + "\r\n";
-        res += "# " + pack.git + "\r\n";
+        res += "# " + pack.repository.git + "\r\n";
         res += "\r\n" + data;
         fs.writeFile(filePath, res, function (err) {
             if (err) {

@@ -49,7 +49,7 @@ export const makeConfig = (filePath: string, cfgFile: Config): Promise<any> => {
     const data = yaml.safeDump(cfgFile);
 
     let res = `# version: ${pack.version}\r\n`;
-    res += `# ${pack.git}\r\n`;
+    res += `# ${pack.repository.git}\r\n`;
     res += "\r\n" + data;
 
     fs.writeFile(filePath, res, err => {
