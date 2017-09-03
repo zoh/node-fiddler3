@@ -5,7 +5,7 @@ var chokidar = require("chokidar");
 var Watcher = (function () {
     function Watcher(dir) {
         var watcher = chokidar.watch(dir, { ignoreInitial: true, persistent: true });
-        logger_1["default"].info("Start watch dir: " + dir);
+        logger_1.logger.info("Start watch dir: " + dir);
         // todo: check config.yml
         // todo: check rules.yml
         watcher
@@ -13,6 +13,7 @@ var Watcher = (function () {
             console.log('File', path, 'has been added');
         })
             .on('change', function (path) {
+            console.log(arguments, '?');
             console.log('File', path, 'has been changed');
         })
             .on('unlink', function (path) {

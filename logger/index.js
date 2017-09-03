@@ -1,6 +1,4 @@
 "use strict";
-///<reference path="../typings/modules/colors/index.d.ts"/>
-///<reference path="../typings/modules/winston/index.d.ts"/>
 exports.__esModule = true;
 var colors = require("colors");
 var winston = require("winston");
@@ -10,11 +8,14 @@ var color = function (val) {
             return colors.red(val);
         case 'INFO':
             return colors.green(val);
+        case 'DEBUG':
+            return colors.bgYellow(val);
         default:
             return val;
     }
 };
-var logger = new (winston.Logger)({
+exports.logger = new (winston.Logger)({
+    level: 'debug',
     transports: [
         new (winston.transports.Console)({
             timestamp: function () {
@@ -30,4 +31,3 @@ var logger = new (winston.Logger)({
         })
     ]
 });
-exports["default"] = logger;

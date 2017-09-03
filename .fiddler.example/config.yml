@@ -1,0 +1,11 @@
+# version: 0.0.3
+# https://github.com/zoh/node-fiddler3
+
+proxy_server:
+  address: localhost
+  port: 1337
+
+## example rules
+rules:
+  - from: /api
+    to: http://localhost:8081/api

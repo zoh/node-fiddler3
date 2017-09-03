@@ -1,3 +1,16 @@
+# version: 0.0.3
+# https://github.com/zoh/node-fiddler3
+
 proxy_server:
-  address: 127.0.0.1
-  port:    1337
+  address: localhost
+  port: 80
+
+rules:
+  - from: ^/api/|/assets/|/ws|/isLogin|/login|/logout
+    to: http://localhost:8080/
+
+  - from: /$
+    to: http://localhost:8080/
+
+  - from: /
+    to: http://localhost:3000/

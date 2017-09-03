@@ -1,46 +1,52 @@
 "use strict";
 exports.__esModule = true;
 var http = require("http");
-var fs = require("fs");
-var request_1 = require("./proxy/request");
 var logger_1 = require("../logger");
-// TODO: что нужно сделать
+var config_1 = require("./config/config");
+var httpProxy = require("http-proxy");
 /*
- 1! отправку через http.request тестовую хотябы за картинкой
- 2. описать интерфейс для настройки вебсервреа
- 3. парсинг файла config.json
+ * todo:
+ 4. subscribe on config.yml
  */
+var proxy = httpProxy.createProxyServer();
 exports.server = function (cfg) {
     // todo: load config file
+    // and reset cfg cache.
     // const watcher = new Watcher(__dirname + "/../.fiddler");
     var server = http.createServer(function (req, res) {
-        request_1["default"]().then(function (data) {
-            console.log('OK!', data);
-            res.writeHead(200, { 'Content-Type': 'text/plain' });
-            res.end(data);
+        if (config_1.isDebug())
+            logger_1.logger.debug('url', req.url);
+        var target;
+        for (var _i = 0, _a = cfg.rules; _i < _a.length; _i++) {
+            var rule = _a[_i];
+            if (req.url.match(rule.from)) {
+                target = rule.to;
+                break;
+            }
+        }
+        if (config_1.isDebug()) {
+            logger_1.logger.log('debug', 'target', target);
+        }
+        if (!target) {
+            res.writeHead(502);
+            return res.end('Not found target by route!');
+        }
+        //
+        proxy.web(req, res, { target: target }, function (err) {
+            if (config_1.isDebug()) {
+                logger_1.logger.debug(err);
+            }
+            res.writeHead(502);
+            res.end(JSON.stringify(err));
         });
+    });
+    server.on('error', function (err) {
+        console.log('error', err);
     });
     server.listen(cfg.proxy_server.port, cfg.proxy_server.address, function () {
         var address = server.address();
-        logger_1["default"].info("Server running at " + address.family + " http://" + address.address + ":" + address.port);
+        logger_1.logger.info("Server running at " + address.family + " http://" + address.address + ":" + address.port);
     });
-};
-var yaml = require('js-yaml');
-exports.loadConfig = function (configFile) {
-    try {
-        var data = fs.readFileSync(configFile, 'utf8');
-        var doc = yaml.safeLoad(data);
-    }
-    catch (e) {
-        if (e.code == 'ENOENT') {
-            logger_1["default"].error("Not found config file: " + configFile);
-        }
-        else {
-            logger_1["default"].error(e);
-        }
-        return null;
-    }
-    return doc;
 };
 // test
 if (require.main === module) {

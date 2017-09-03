@@ -1,10 +1,10 @@
-import logger from '../logger'
+import {logger} from '../logger'
 import * as chokidar  from 'chokidar';
 
 
 export class Watcher {
   constructor(dir: string) {
-    var watcher = chokidar.watch(dir, {ignoreInitial: true, persistent: true});
+    const watcher = chokidar.watch(dir, {ignoreInitial: true, persistent: true});
 
     logger.info(`Start watch dir: ${dir}`);
 
@@ -16,6 +16,7 @@ export class Watcher {
         console.log('File', path, 'has been added');
       })
       .on('change', function (path) {
+        console.log(arguments, '?');
         console.log('File', path, 'has been changed');
       })
       .on('unlink', function (path) {

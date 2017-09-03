@@ -1,6 +1,3 @@
-///<reference path="../typings/modules/colors/index.d.ts"/>
-///<reference path="../typings/modules/winston/index.d.ts"/>
-
 import colors = require("colors")
 import winston = require("winston")
 
@@ -11,12 +8,15 @@ const color = (val) => {
       return colors.red(val);
     case 'INFO':
       return colors.green(val);
+    case 'DEBUG':
+      return colors.bgYellow(val);
     default:
       return val
   }
 };
 
-var logger = new (winston.Logger)({
+export const logger = new (winston.Logger)({
+  level: 'debug',
   transports: [
     new (winston.transports.Console)({
       timestamp: function () {
@@ -32,6 +32,3 @@ var logger = new (winston.Logger)({
     })
   ]
 });
-
-
-export default logger

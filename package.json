@@ -1,6 +1,7 @@
 {
   "name": "node-fiddler3",
   "version": "0.0.3",
+  "git": "https://github.com/zoh/node-fiddler3",
   "scripts": {
     "start": "node ./server/server.js"
   },
@@ -12,6 +13,8 @@
     "colors": "^1.1.2",
     "commander": "^2.9.0",
     "http-proxy": "^1.16.2",
+    "js-yaml": "^3.9.1",
+    "rimraf": "^2.6.1",
     "winston": "^2.3.1"
   }
 }

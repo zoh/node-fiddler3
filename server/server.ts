@@ -2,62 +2,63 @@ import * as http from "http";
 import * as fs from 'fs';
 import request from "./proxy/request";
 import {Watcher} from "./watcher"
-import logger from '../logger'
+import {logger} from '../logger'
 import {resolve} from "url";
+import {Config, isDebug, makeUrl} from "./config/config";
+import * as httpProxy from 'http-proxy'
+import {error} from "util";
 
-
-
-// TODO: что нужно сделать
 /*
- 1! отправку через http.request тестовую хотябы за картинкой
- 2. описать интерфейс для настройки вебсервреа
- 3. парсинг файла config.json
+ * todo:
+ 4. subscribe on config.yml
  */
 
+const proxy = httpProxy.createProxyServer();
 
 export const server = (cfg: Config) => {
   // todo: load config file
+  // and reset cfg cache.
   // const watcher = new Watcher(__dirname + "/../.fiddler");
 
   const server = http.createServer((req, res) => {
-    request().then(data => {
-      console.log('OK!', data);
-      res.writeHead(200, {'Content-Type': 'text/plain'});
-      res.end(data);
-    });
+    if (isDebug())
+      logger.debug('url', req.url);
 
+    let target: string;
+    for (let rule of cfg.rules) {
+      if (req.url.match(rule.from)) {
+        target = rule.to;
+        break;
+      }
+    }
+    if (isDebug()) {
+      logger.log('debug', 'target', target);
+    }
+    if (!target) {
+      res.writeHead(502);
+      return res.end('Not found target by route!');
+    }
+    //
+    proxy.web(req, res, {target}, (err: any) => {
+      if (isDebug()) {
+        logger.debug(err);
+      }
+
+      res.writeHead(502);
+      res.end(JSON.stringify(err));
+    });
   });
+
+  server.on('error', (err: any) => {
+    console.log('error', err);
+  });
+
   server.listen(cfg.proxy_server.port, cfg.proxy_server.address, () => {
     const address = server.address();
     logger.info(`Server running at ${address.family} http://${address.address}:${address.port}`);
   });
 
 };
-
-
-interface Config {
-  proxy_server: {
-    address: string
-    port: number
-  }
-}
-
-const yaml = require('js-yaml');
-export const loadConfig = (configFile:string): Config => {
-  try {
-    const data = fs.readFileSync(configFile, 'utf8');
-    var doc = yaml.safeLoad(data);
-  } catch (e) {
-    if (e.code == 'ENOENT') {
-      logger.error("Not found config file: " + configFile);
-    } else {
-      logger.error(e)
-    }
-    return null
-  }
-  return doc
-};
-
 
 // test
 if (require.main === module) {
